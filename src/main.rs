@@ -5,20 +5,19 @@ use strum_macros::{AsRefStr, EnumIter};
 #[rustfmt::skip]
 #[derive(Copy, Clone, Debug, Hash, EnumIter, Eq, PartialEq, AsRefStr, Serialize, Deserialize)]
 enum Token {
-    // vocals
-    A, E, I, O, U, Y,
-    AO, // å
-    AE, // ä
-    OO, // ö
     // vowels
+    A, E, I, O, U, Y,
+    // consonants
     B, C, D, F, G,
     H, J, K, L, M,
     N, P, Q, R, S,
     T, V, W, X, Z,
 
     // special
-    BR,
-    STENOGRAFI,
+    SH,
+
+    // blends
+    // CM, TR, DR, TD, DT, LR, MR, XC, ...
 }
 
 struct ProccessedToken {
@@ -48,37 +47,33 @@ pub struct VisualToken {
 fn str_to_processed_token(input: &str) -> Result<TokenStop, ProccessedToken> {
     let len = input.len();
     let token = match input {
-        "br" => Token::BR,
+        "sh" => Token::SH,
         "a" => Token::A,
-        "e" => Token::E,
-        "i" => Token::I,
-        "o" => Token::O,
-        "u" => Token::U,
-        "y" => Token::Y,
-        "å" => Token::AO,
-        "ä" => Token::AE,
-        "ö" => Token::OO,
         "b" => Token::B,
         "c" => Token::C,
         "d" => Token::D,
+        "e" => Token::E,
         "f" => Token::F,
         "g" => Token::G,
         "h" => Token::H,
+        "i" => Token::I,
         "j" => Token::J,
         "k" => Token::K,
         "l" => Token::L,
         "m" => Token::M,
         "n" => Token::N,
+        "o" => Token::O,
         "p" => Token::P,
         "q" => Token::Q,
         "r" => Token::R,
         "s" => Token::S,
         "t" => Token::T,
+        "u" => Token::U,
         "v" => Token::V,
         "w" => Token::W,
         "x" => Token::X,
+        "y" => Token::Y,
         "z" => Token::Z,
-        "stenografi" => Token::STENOGRAFI,
         //_ => return Ok(TokenStop::NoSuchCharacter),
         _ => {
             return Err(ProccessedToken {
@@ -107,8 +102,7 @@ fn find_return(find: &str, input: &str) -> Result<TokenStop, ProccessedToken> {
 }
 
 fn tokenise(input: &str) -> Result<TokenStop, ProccessedToken> {
-    find_return("stenografi", input)?;
-    find_return("br", input)?;
+    find_return("sh", input)?;
     find_return("a", input)?;
     find_return("e", input)?;
     find_return("i", input)?;
@@ -117,9 +111,6 @@ fn tokenise(input: &str) -> Result<TokenStop, ProccessedToken> {
     find_return("o", input)?;
     find_return("u", input)?;
     find_return("y", input)?;
-    find_return("å", input)?;
-    find_return("ä", input)?;
-    find_return("ö", input)?;
     find_return("b", input)?;
     find_return("c", input)?;
     find_return("d", input)?;
